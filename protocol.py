@@ -1,6 +1,7 @@
 import typing
 import bittensor as bt
 
+
 class Dummy(bt.Synapse):
     """
     A simple dummy protocol that inherits from bt.Synapse.
