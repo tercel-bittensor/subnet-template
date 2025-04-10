@@ -155,6 +155,7 @@ class Validator:
                     uids=self.metagraph.uids,
                     weights=weights,
                     wait_for_inclusion=True,
+                    period=self.tempo  # Good for fast blocks - otherwise make sure to set proper period or remove this argument completely 
                 )
                 self.metagraph.sync()
                 # sleep until next tempo
