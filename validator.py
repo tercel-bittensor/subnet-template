@@ -107,6 +107,7 @@ class Validator:
         bt.logging.info("Starting validator loop.")
         while True:
             try:
+                # time.sleep(int(self.subtensor.tempo(self.config.netuid) * 0.25))
                 # Create a synapse with the current step value.
                 synapse = Dummy(dummy_input=random.randint(0, 100))
 
@@ -143,21 +144,21 @@ class Validator:
                     self.config.netuid, self.my_uid
                 )
 
-                # set weights once every tempo + 1
-                if self.last_update > self.tempo + 1:
-                    total = sum(self.moving_avg_scores)
-                    weights = [score / total for score in self.moving_avg_scores]
-                    bt.logging.info(f"[blue]Setting weights: {weights}[/blue]")
-                    # Update the incentive mechanism on the Bittensor blockchain.
-                    result = self.subtensor.set_weights(
-                        netuid=self.config.netuid,
-                        wallet=self.wallet,
-                        uids=self.metagraph.uids,
-                        weights=weights,
-                        wait_for_inclusion=True,
-                    )
-                    self.metagraph.sync()
-                time.sleep(5)
+                # set weights once every tempo
+                total = sum(self.moving_avg_scores)
+                weights = [score / total for score in self.moving_avg_scores]
+                bt.logging.info(f"[blue]Setting weights: {weights}[/blue]")
+                # Update the incentive mechanism on the Bittensor blockchain.
+                result = self.subtensor.set_weights(
+                    netuid=self.config.netuid,
+                    wallet=self.wallet,
+                    uids=self.metagraph.uids,
+                    weights=weights,
+                    wait_for_inclusion=True,
+                )
+                self.metagraph.sync()
+                # sleep until next tempo
+                time.sleep((((self.subtensor.block // self.tempo) + 1) * self.tempo) + 1)
 
             except RuntimeError as e:
                 bt.logging.error(e)
