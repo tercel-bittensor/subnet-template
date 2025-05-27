@@ -11,7 +11,7 @@ config.subtensor.network = "local"
 config.subtensor.chain_endpoint = "ws://127.0.0.1:9944"
 
 subtensor = bt.subtensor(config=config)
-netuid = 1
+netuid = 2
 metagraph = subtensor.metagraph(netuid)
 metagraph.sync()
 
