@@ -159,9 +159,12 @@ class Validator:
                 )
                 self.metagraph.sync()
                 # sleep until next tempo
-                sleep_time = ((self.subtensor.block // self.tempo) + 1) * self.tempo + 1
-                bt.logging.info(f"Sleeping for {sleep_time} seconds")
-                time.sleep(sleep_time)
+                next_tempo_block = ((self.subtensor.block // self.tempo) + 1) * self.tempo
+                blocks_until_next_tempo = next_tempo_block - self.subtensor.block
+                # 1 block = 1 second
+                seconds_until_next_tempo = blocks_until_next_tempo * 1
+                bt.logging.info(f"Sleeping for {seconds_until_next_tempo} seconds until next tempo.")
+                time.sleep(seconds_until_next_tempo)
 
             except RuntimeError as e:
                 bt.logging.error(e)
