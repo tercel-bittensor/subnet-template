@@ -144,10 +144,23 @@ class Validator:
                     self.config.netuid, self.my_uid
                 )
 
-                # set weights once every tempo
-                total = sum(self.moving_avg_scores)
-                weights = [score / total for score in self.moving_avg_scores]
+                # weights: default fixed 0.2, other validators share 0.8, others 0
+                weights = [0.0] * len(self.metagraph.uids)
+                # default always UID=0
+                if len(weights) > 0:
+                    weights[0] = 0.2
+                # find valid miner indices (exclude default), note: stopped miners still in the list for a short time, until the Axon information is cleared on the chain. 
+                miner_indices = [i for i, axon in enumerate(self.metagraph.axons) if i != 0 and axon.ip != '0.0.0.0' and axon.port != 0]
+                num_miners = len(miner_indices)
+                if num_miners > 0:
+                    for i in miner_indices:
+                        weights[i] = 0.8 / num_miners
+                # normalize to prevent floating point errors
+                total = sum(weights)
+                if total > 0:
+                    weights = [w / total for w in weights]
                 bt.logging.info(f"[blue]Setting weights: {weights}[/blue]")
+
                 # Update the incentive mechanism on the Bittensor blockchain.
                 self.subtensor.set_weights(
                     netuid=self.config.netuid,
