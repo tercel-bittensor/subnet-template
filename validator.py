@@ -22,6 +22,9 @@ class Validator:
         self.moving_avg_scores = [1.0] * len(self.metagraph.S)
         self.alpha = 0.1
 
+        bt.logging.info(f"tempo: {self.tempo}")
+        bt.logging.info(f"last_update: {self.last_update}")
+
     def get_config(self):
         # Set up the configuration parser.
         parser = argparse.ArgumentParser()

@@ -1,1 +1,2 @@
 bittensor>=8.5.1
+python-socks>=2.4.0
