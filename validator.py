@@ -150,6 +150,7 @@ class Validator:
                 # set weights once every tempo
                 total = sum(self.moving_avg_scores)
                 weights = [score / total for score in self.moving_avg_scores]
+                bt.logging.info(f"[blue]Setting uids: {self.metagraph.uids}[/blue]")
                 bt.logging.info(f"[blue]Setting weights: {weights}[/blue]")
                 # Update the incentive mechanism on the Bittensor blockchain.
                 self.subtensor.set_weights(
